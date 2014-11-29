@@ -1,0 +1,31 @@
+#!/bin/sh
+#mv proxy ~/bin
+
+BASE_DIR=$(pwd)
+
+REMOTE_HOST=yuanpeng01@cq01-rdqa-pool121.cq01.baidu.com
+REMOTE_DIR=/home/users/yuanpeng01
+
+COMMAND=$1
+#npm install
+if [ "$COMMAND" = "npm" ];then
+    if [ -n "$2" ] && [ "$2" = "install" ];then
+
+    ssh ${REMOTE_HOST} "rm -rf tmp/*;mkdir -p tmp;cd tmp;~/bin/npm install $3;tar -czf modules.tgz node_modules/*;"
+    scp ${REMOTE_HOST}:${REMOTE_DIR}/tmp/modules.tgz .
+    tar -xzf modules.tgz
+    rm modules.tgz
+
+    else
+    $@ 
+    fi
+fi
+
+#wget
+if [ "$COMMAND" = "wget" ] || [ "$COMMAND" = "curl" ];then
+    ssh ${REMOTE_HOST} "rm -rf tmp/*;mkdir -p tmp;cd tmp;$@;tar -czf tar.tgz *;"
+    scp ${REMOTE_HOST}:${REMOTE_DIR}/tmp/tar.tgz .
+    tar -xzf tar.tgz
+    rm tar.tgz
+fi
+#curl
