@@ -31,6 +31,59 @@ ln -s $INSTALL_DIR/node/bin/node ~/bin/node
 ln -s $INSTALL_DIR/node/bin/npm ~/bin/npm
 cd -
 
+#install apache
+tar -xzvf httpd-2.2.29.tar.gz
+cd httpd-2.2.29
+mkdir -p $INSTALL_DIR/apache
+./configure --prefix=$INSTALL_DIR/apache --enable-module=so
+make
+make install
+cd -
+
+
+#install php
+tar -xzvf php-5.2.17.tar.gz
+cd php-5.2.17
+./configure --prefix=$INSTALL_DIR/php --with-apxs2=$INSTALL_DIR/apache/bin/apxs --with-config-file-path=$INSTALL_DIR/php/etc
+make
+make install
+cp php.ini-dist $INSTALL_DIR/php/etc/php.ini
+
+#add config to httpd.conf
+sed -i '/conf\/mime\.types/a\
+      AddType application\/x-httpd-php \.php \.phtml \.php3 \.inc\
+      AddType application\/x-httpd-php-source \.phps
+' $INSTALL_DIR/apache/conf/httpd.conf
+
+sed -i 's/Listen\s*80/Listen 8900/' $INSTALL_DIR/apache/conf/httpd.conf
+
+#modify php.ini
+sed -i 's/register_globals\s*=\s*Off/register_globals = On/' $INSTALL_DIR/php/etc/php.ini
+cd -
+
+#install xhprof
+tar zxf xhprof-0.9.2.tgz
+cd xhprof-0.9.2/extension
+$INSTALL_DIR/php/bin/phpize
+./configure --with-php-config=$INSTALL_DIR/php/bin/php-config
+make
+make install
+cd -
+
+cd xhprof-0.9.2
+cp -r xhprof_html xhprof_lib $INSTALL_DIR/apache/htdocs/
+
+sed -i 's/extension_dir\s*=/#extension_dir =/' $INSTALL_DIR/php/etc/php.ini
+sed -i '/extension_dir\s*=/a\
+extension_dir="\/home\/search\/install\/php\/lib\/php\/extensions\/no-debug-non-zts-20060613\/"
+' $INSTALL_DIR/php/etc/php.ini
+
+echo "[xhprof]" >> $INSTALL_DIR/php/etc/php.ini
+echo "extension=xhprof.so" >> $INSTALL_DIR/php/etc/php.ini
+echo "xhprof.output_dir=/tmp/" >> $INSTALL_DIR/php/etc/php.ini
+
+cd -
+
 #install ruby
 tar -xzvf ruby-2.1.5.tar.gz 
 cd ruby-2.1.5
@@ -57,7 +110,9 @@ cd -
 
 #vimrc
 tar xzf vimrc.tgz
+mkdir -p ~/.vim
 cp -r .vim/* ~/.vim/
+cp -r .vimrc ~/
 
 #install command-T
 #cd ~/.vim/
