@@ -44,9 +44,14 @@ cd -
 #install php
 tar -xzvf php-5.2.17.tar.gz
 cd php-5.2.17
-./configure --prefix=$INSTALL_DIR/php --with-apxs2=$INSTALL_DIR/apache/bin/apxs --with-config-file-path=$INSTALL_DIR/php/etc
+./configure --prefix=$INSTALL_DIR/php --with-config-file-path=$INSTALL_DIR/php/etc
 make
 make install
+
+./configure --prefix=$INSTALL_DIR/php --with-apxs2=$INSTALL_DIR/apache/bin/apxs
+make
+make install
+
 cp php.ini-dist $INSTALL_DIR/php/etc/php.ini
 
 #add config to httpd.conf

@@ -1,3 +1,6 @@
 *.tar.gz
 *.tar.bz2
 *.vba
+*.bin
+*.tgz
+password

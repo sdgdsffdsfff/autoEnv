@@ -1,6 +1,7 @@
 alias vim='~/bin/vim'
 export JAVA_HOME=/home/search/install/java/jdk1.6.0_45/bin
 export PATH=/home/search/install/java/jdk1.6.0_45/bin/:$PATH
+#export PATH=/home/work/search/view-ui/php/bin:$PATH
 export PATH=/home/search/install/php/bin:$PATH
 export PATH=/home/search/bin:$PATH
 export LC_ALL=en_US.UTF-8

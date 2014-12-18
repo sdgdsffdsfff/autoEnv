@@ -33,7 +33,7 @@ cd -
 
 tar zxf xhprof-0.9.2.tgz
 cd xhprof-0.9.2/extension
-$INSTALL_DIR/php/bin/phpize
+~/fis/php-linux/bin/phpize
 ./configure --with-php-config=~/fis/php-linux/bin/php-config
 make
 make install
